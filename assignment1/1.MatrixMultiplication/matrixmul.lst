@@ -1,0 +1,396 @@
+     1                                  ; Computer System Design Lab, Assignment-1
+     2                                  ; Matrix Multiplication 
+     3                                  
+     4                                  ; Declaring externel Functions
+     5                                  extern printf
+     6                                  
+     7                                  %macro printString 1
+     8                                  
+     9                                  	SECTION	.data
+    10                                  	.str:	db	%1,0		; %1 is macro call first actual parameter
+    11                                  	;strlen: equ $-str
+    12                                  	SECTION .bss
+    13                                  	
+    14                                  	SECTION .text
+    15                                  push eax
+    16                                  push ebx
+    17                                  push ecx
+    18                                  push edx
+    19                                  
+    20                                  	push	dword .str 	; users string
+    21                                      push    dword strfmt       ; address of format string
+    22                                      call    printf          ; Call C function
+    23                                      add     esp,8          ; pop stack 8*4 bytes
+    24                                  
+    25                                  pop edx
+    26                                  pop ecx
+    27                                  pop ebx
+    28                                  pop eax
+    29                                  %endmacro
+    30                                  
+    31                                  ; Macro for printing a number
+    32                                  
+    33                                  %macro printNumber 1
+    34                                  
+    35                                  	SECTION	.data
+    36                                  	;number:	db	%1,0		; %1 is macro call first actual parameter
+    37                                  	SECTION .bss
+    38                                  	
+    39                                  	SECTION .text
+    40                                  push ebx
+    41                                  push ecx
+    42                                  push edx
+    43                                   
+    44                                  	push	dword [globalNum] 	; users string
+    45                                      push    dword numfmt       ; address of format string
+    46                                      call    printf          ; Call C function
+    47                                      add     esp,8          ; pop stack 8*4 bytes
+    48                                  
+    49                                  pop edx
+    50                                  pop ecx
+    51                                  pop ebx
+    52                                  %endmacro
+    53                                  
+    54                                  printIntro:
+    55                                  	printString "Asssignment:1 Matrix Multiplication " 
+    56                              <1> 
+    57                              <1>  SECTION .data
+    58 00000000 4173737369676E6D65- <1>  .str: db %1,0
+    59 00000009 6E743A31204D617472- <1>
+    60 00000012 6978204D756C746970- <1>
+    61 0000001B 6C69636174696F6E20- <1>
+    62 00000024 00                  <1>
+    63                              <1> 
+    64                              <1>  SECTION .bss
+    65                              <1> 
+    66                              <1>  SECTION .text
+    67 00000000 50                  <1> push eax
+    68 00000001 53                  <1> push ebx
+    69 00000002 51                  <1> push ecx
+    70 00000003 52                  <1> push edx
+    71                              <1> 
+    72 00000004 68[00000000]        <1>  push dword .str
+    73 00000009 68[73000000]        <1>  push dword strfmt
+    74 0000000E E8(00000000)        <1>  call printf
+    75 00000013 83C408              <1>  add esp,8
+    76                              <1> 
+    77 00000016 5A                  <1> pop edx
+    78 00000017 59                  <1> pop ecx
+    79 00000018 5B                  <1> pop ebx
+    80 00000019 58                  <1> pop eax
+    81 0000001A C3                      ret
+    82                                  printRow:
+    83                                  	printString " Row number "
+    84                              <1> 
+    85                              <1>  SECTION .data
+    86 00000025 20526F77206E756D62- <1>  .str: db %1,0
+    87 0000002E 65722000            <1>
+    88                              <1> 
+    89                              <1>  SECTION .bss
+    90                              <1> 
+    91                              <1>  SECTION .text
+    92 0000001B 50                  <1> push eax
+    93 0000001C 53                  <1> push ebx
+    94 0000001D 51                  <1> push ecx
+    95 0000001E 52                  <1> push edx
+    96                              <1> 
+    97 0000001F 68[25000000]        <1>  push dword .str
+    98 00000024 68[73000000]        <1>  push dword strfmt
+    99 00000029 E8(00000000)        <1>  call printf
+   100 0000002E 83C408              <1>  add esp,8
+   101                              <1> 
+   102 00000031 5A                  <1> pop edx
+   103 00000032 59                  <1> pop ecx
+   104 00000033 5B                  <1> pop ebx
+   105 00000034 58                  <1> pop eax
+   106 00000035 C3                      ret
+   107                                  printCol:
+   108                                  	printString " Col number "
+   109                              <1> 
+   110                              <1>  SECTION .data
+   111 00000032 20436F6C206E756D62- <1>  .str: db %1,0
+   112 0000003B 65722000            <1>
+   113                              <1> 
+   114                              <1>  SECTION .bss
+   115                              <1> 
+   116                              <1>  SECTION .text
+   117 00000036 50                  <1> push eax
+   118 00000037 53                  <1> push ebx
+   119 00000038 51                  <1> push ecx
+   120 00000039 52                  <1> push edx
+   121                              <1> 
+   122 0000003A 68[32000000]        <1>  push dword .str
+   123 0000003F 68[73000000]        <1>  push dword strfmt
+   124 00000044 E8(00000000)        <1>  call printf
+   125 00000049 83C408              <1>  add esp,8
+   126                              <1> 
+   127 0000004C 5A                  <1> pop edx
+   128 0000004D 59                  <1> pop ecx
+   129 0000004E 5B                  <1> pop ebx
+   130 0000004F 58                  <1> pop eax
+   131 00000050 C3                      ret
+   132                                  printThird:
+   133                                  	printString " Third "
+   134                              <1> 
+   135                              <1>  SECTION .data
+   136 0000003F 2054686972642000    <1>  .str: db %1,0
+   137                              <1> 
+   138                              <1>  SECTION .bss
+   139                              <1> 
+   140                              <1>  SECTION .text
+   141 00000051 50                  <1> push eax
+   142 00000052 53                  <1> push ebx
+   143 00000053 51                  <1> push ecx
+   144 00000054 52                  <1> push edx
+   145                              <1> 
+   146 00000055 68[3F000000]        <1>  push dword .str
+   147 0000005A 68[73000000]        <1>  push dword strfmt
+   148 0000005F E8(00000000)        <1>  call printf
+   149 00000064 83C408              <1>  add esp,8
+   150                              <1> 
+   151 00000067 5A                  <1> pop edx
+   152 00000068 59                  <1> pop ecx
+   153 00000069 5B                  <1> pop ebx
+   154 0000006A 58                  <1> pop eax
+   155                                  callNum:
+   156 0000006B 50                      	push eax
+   157 0000006C A1[7F000000]            	mov eax,[globalNum]
+   158                                  	
+   159 00000071 A3[7F000000]            	mov [globalNum],eax
+   160                                  	printNumber eax
+   161                              <1> 
+   162                              <1>  SECTION .data
+   163                              <1> 
+   164                              <1>  SECTION .bss
+   165                              <1> 
+   166                              <1>  SECTION .text
+   167 00000076 53                  <1> push ebx
+   168 00000077 51                  <1> push ecx
+   169 00000078 52                  <1> push edx
+   170                              <1> 
+   171 00000079 FF35[7F000000]      <1>  push dword [globalNum]
+   172 0000007F 68[79000000]        <1>  push dword numfmt
+   173 00000084 E8(00000000)        <1>  call printf
+   174 00000089 83C408              <1>  add esp,8
+   175                              <1> 
+   176 0000008C 5A                  <1> pop edx
+   177 0000008D 59                  <1> pop ecx
+   178 0000008E 5B                  <1> pop ebx
+   179 0000008F 58                      	pop eax
+   180 00000090 C3                      ret
+   181                                  
+   182                                  rcToAddress:
+   183                                  		; get no of cols in ebx
+   184                                  	
+   185                                  		; if it is a first row then don't  care about of no of rows 
+   186                                  		; dec column and multiply with 4
+   187                                  		; if it is first row go to remRows
+   188                                  		; ecx contains row number
+   189                                  		; edx contains column number
+   190                                  		
+   191 00000091 49                      		dec ecx
+   192 00000092 4A                      		dec edx
+   193 00000093 6BC904                  		imul ecx,4
+   194 00000096 0FAFCB                  		imul ecx,ebx
+   195 00000099 6BD204                  		imul edx,4
+   196 0000009C 01D1                    		add ecx,edx
+   197 0000009E 89C8                    		mov eax,ecx
+   198                                  	
+   199 000000A0 C3                      ret
+   200                                  multiply:
+   201 000000A1 53                      	push ebx
+   202 000000A2 0FAFCA                  		imul ecx,edx
+   203 000000A5 89C8                    		mov eax,ecx
+   204 000000A7 A3[7F000000]            		mov [globalNum],eax
+   205                                  		printNumber 
+   206 000000AC 5B                      	pop ebx
+   207                                  	
+   208 000000AD C3                      ret	
+   209                                  
+   210                                  SECTION .data ; declaring and intializing data, not for variables
+   211 00000047 48656C6C6F20576F72-     	msg: db "Hello World",10
+   212 00000050 6C640A             
+   213                                  	len: equ $-msg
+   214 00000053 73737564686565720A      	msg1: db "ssudheer",10
+   215 0000005C 73616E6128              	globalStr: db "sana",40
+   216                                  	len1: equ $-msg1
+   217 00000061 05000000                	a:	dd	5		; int a=5;
+   218                                  	
+   219                                  	;.str:	db	"sdfdfs",20		; %1 is macro call first actual parameter
+   220 00000065 613D25642C20656178-     	fmt:    db "a=%d, eax=%d", 10, 0 ; The printf format, "\n",'0'
+   221 0000006E 3D25640A00         
+   222                                  
+   223 00000073 202573200A00            	strfmt: db " %s ",10,0	; format string for printf
+   224 00000079 202564200A00            	numfmt: db " %d ",10,0
+   225 0000007F 00000000                	globalNum: dd 0
+   226 00000083 01000000                	i: dd 1
+   227 00000087 01000000                	j: dd 1
+   228 0000008B 01000000                	k: dd 1
+   229                                  	; size of matrix 2 x 2
+   230 0000008F 010000000200000003-     	matrixA: dd 1,2,3,4
+   231 00000098 00000004000000     
+   232 0000009F 02000000                	ARows: dd 2
+   233 000000A3 02000000                	ACols: dd 2
+   234 000000A7 00000000                	Aadrs: dd 0
+   235                                  	; size of matrix 2 x 2
+   236 000000AB 010000000100000000-     	matrixB: dd 1,1,0,1
+   237 000000B4 00000001000000     
+   238 000000BB 02000000                	BRows: dd 2
+   239 000000BF 02000000                	BCols: dd 2
+   240 000000C3 00000000                	Badrs: dd 0
+   241 000000C7 000000000000000000-     	matrixC: dd 0,0,0,0
+   242 000000D0 00000000000000     
+   243 000000D7 02000000                	CRows: dd 2
+   244 000000DB 02000000                	CCols: dd 2
+   245 000000DF 00000000                	Cadrs: dd 0
+   246                                  	
+   247 000000E3 00000000                	temp: dd 0
+   248                                  SECTION .bss ; declaring variables
+   249                                  
+   250                                  
+   251                                  
+   252                                  
+   253                                  SECTION .text ; code part
+   254                                  
+   255                                  global main
+   256                                  
+   257                                  main:
+   258                                  	;call printIntro	
+   259                                  	
+   260                                  firstLoop:
+   261                                  	; compare the i value if i value equals to no of rows then go and exit
+   262                                  	; otherwise goto second loop
+   263                                  	;call printIntro
+   264 000000AE A1[83000000]            	mov eax,[i]
+   265 000000B3 8B1D[D7000000]          	mov ebx,[CRows]
+   266 000000B9 83C301                  	add ebx,1
+   267 000000BC 39D8                    	cmp eax,ebx
+   268 000000BE 0F8426010000            	je ssexit
+   269                                  
+   270                                  ;	call printRow
+   271                                  ;	mov [globalNum],eax
+   272                                  ;	printNumber eax
+   273                                  
+   274                                  	; Intailizing the J value as 1
+   275 000000C4 B801000000              	mov eax,1
+   276 000000C9 A3[87000000]            	mov [j],eax
+   277                                  	; Entry of secondLoop
+   278                                  	secondLoop:
+   279                                  		;call printIntro
+   280                                  		; if j value equals to no of columns then go and increment the i value 
+   281                                  		; if not equals go to inside of secondLoop
+   282 000000CE A1[87000000]            		mov eax,[j]
+   283 000000D3 8B1D[DB000000]          		mov ebx,[CCols]
+   284 000000D9 83C301                  		add ebx,1
+   285 000000DC 39D8                    		cmp eax,ebx
+   286 000000DE 0F84F6000000            		je incIVal
+   287                                  
+   288                                  ;		call printCol
+   289                                  ;		mov [globalNum],eax
+   290                                  ;		printNumber eax
+   291                                  		; convert a[i][j] to [a + ?]
+   292                                  
+   293 000000E4 8B0D[83000000]          		mov ecx,[i]
+   294 000000EA 8B15[87000000]          		mov edx,[j]
+   295 000000F0 8B1D[DB000000]          		mov ebx,[CCols]
+   296 000000F6 E896FFFFFF              		call rcToAddress
+   297                                  		; now eax contains address 
+   298                                  		;call printIntro
+   299 000000FB A3[DF000000]            		mov [Cadrs],eax
+   300                                  			
+   301 00000100 B800000000              			mov eax,0
+   302 00000105 A3[E3000000]            			mov [temp],eax
+   303 0000010A B801000000              			mov eax,1
+   304 0000010F A3[8B000000]            			mov [k],eax
+   305                                  			thirdLoop:
+   306                                  				;call printIntro
+   307                                  				; if k no of rows are completed then go and increase the j value
+   308 00000114 A1[8B000000]            				mov eax,[k]
+   309 00000119 8B1D[A3000000]          				mov ebx,[ACols]
+   310 0000011F 83C301                  				add ebx,1
+   311 00000122 39D8                    				cmp eax,ebx
+   312 00000124 7473                    				je assignAndIncJval
+   313                                  				
+   314                                  ;				call printThird 
+   315                                  ;				mov [globalNum],eax
+   316                                  ;				printNumber eax
+   317                                  				
+   318                                  				; address of Matrix A
+   319 00000126 8B0D[83000000]          				mov ecx,[i]
+   320 0000012C 8B15[8B000000]          				mov edx,[k]
+   321 00000132 8B1D[A3000000]          				mov ebx,[ACols]
+   322 00000138 E854FFFFFF              				call rcToAddress
+   323 0000013D A3[A7000000]            				mov [Aadrs],eax
+   324                                  				
+   325                                  				; address of Matrix B
+   326 00000142 8B0D[8B000000]          				mov ecx,[k]
+   327 00000148 8B15[87000000]          				mov edx,[j]
+   328 0000014E 8B1D[BF000000]          				mov ebx,[BCols]
+   329 00000154 E838FFFFFF              				call rcToAddress
+   330 00000159 A3[C3000000]            				mov [Badrs],eax
+   331                                  				
+   332                                  				; Multiplication
+   333 0000015E 8B1D[A7000000]          				mov ebx,[Aadrs]
+   334 00000164 8B8B[8F000000]          				mov ecx,[matrixA+ebx]
+   335 0000016A 8B1D[C3000000]          				mov ebx,[Badrs]
+   336 00000170 8B93[AB000000]          				mov edx,[matrixB+ebx]
+   337                                  				
+   338                                  				;;;;;;;;;call printIntro
+   339 00000176 E826FFFFFF              				call multiply
+   340                                  
+   341 0000017B 8B1D[E3000000]          				mov ebx,[temp]
+   342 00000181 01C3                    				add ebx,eax
+   343 00000183 891D[E3000000]          				mov [temp],ebx
+   344                                  				
+   345                                  				; incrementing k value
+   346 00000189 A1[8B000000]            				mov eax,[k]
+   347 0000018E 40                      				inc eax
+   348 0000018F A3[8B000000]            				mov [k],eax
+   349 00000194 E97BFFFFFF              				jmp thirdLoop
+   350                                  				
+   351                                  				assignAndIncJval:
+   352 00000199 A1[E3000000]            					mov eax,[temp]
+   353 0000019E 8B1D[DF000000]          					mov ebx,[Cadrs]
+   354 000001A4 8983[C7000000]          					mov [matrixC+ebx],eax
+   355                                  					
+   356 000001AA A3[7F000000]            					mov [globalNum],eax
+   357                                  					printNumber eax
+   358                              <1> 
+   359                              <1>  SECTION .data
+   360                              <1> 
+   361                              <1>  SECTION .bss
+   362                              <1> 
+   363                              <1>  SECTION .text
+   364 000001AF 53                  <1> push ebx
+   365 000001B0 51                  <1> push ecx
+   366 000001B1 52                  <1> push edx
+   367                              <1> 
+   368 000001B2 FF35[7F000000]      <1>  push dword [globalNum]
+   369 000001B8 68[79000000]        <1>  push dword numfmt
+   370 000001BD E8(00000000)        <1>  call printf
+   371 000001C2 83C408              <1>  add esp,8
+   372                              <1> 
+   373 000001C5 5A                  <1> pop edx
+   374 000001C6 59                  <1> pop ecx
+   375 000001C7 5B                  <1> pop ebx
+   376                                  
+   377 000001C8 EB00                    					jmp incJVal
+   378                                  				
+   379                                  		; incrementing j value 
+   380                                  		; the correct address value is stored in eax value
+   381                                  		incJVal:
+   382 000001CA A1[87000000]            			mov eax,[j]
+   383 000001CF 40                      			inc eax
+   384 000001D0 A3[87000000]            			mov [j],eax
+   385 000001D5 E9F4FEFFFF              			jmp secondLoop
+   386                                  	incIVal:	
+   387                                  	; incrementing i value	
+   388 000001DA A1[83000000]            	mov eax,[i]
+   389 000001DF 40                      	inc eax
+   390 000001E0 A3[83000000]            	mov [i],eax
+   391 000001E5 E9C4FEFFFF              	jmp firstLoop
+   392                                  	
+   393                                  ; exit(0)
+   394                                  ssexit:
+   395 000001EA B800000000              mov eax,0
+   396 000001EF C3                      ret
