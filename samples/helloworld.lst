@@ -1,0 +1,20 @@
+     1                                  ; helloworld.asm program
+     2                                  ; Sudheer Sana
+     3                                  SECTION .data
+     4 00000000 48656C6C6F20576F72-     	msg: db "Hello World",10
+     5 00000009 6C640A             
+     6                                  	len: equ $-msg
+     7                                  SECTION .text
+     8                                  	global main
+     9                                  main:
+    10 00000000 BA0C000000              	mov edx,len ; arg3 for length of the string
+    11 00000005 B9[00000000]            	mov ecx,msg ; arg2 pointer to string
+    12 0000000A BB01000000              	mov ebx,1   ; arg1where to write , 1 for screen
+    13 0000000F B804000000              	mov eax,4	; write sysout command to int 80 hex
+    14 00000014 CD80                    	int 0x80    ; interrput call kernel
+    15                                  	
+    16                                  	
+    17                                  	; exit code
+    18 00000016 BB00000000              	mov ebx,0    ; exit code 0=normal
+    19 0000001B B801000000              	mov eax,1    ; exit command to kernel
+    20 00000020 CD80                    	int 0x80	 ; interrupt 80 hex kernel

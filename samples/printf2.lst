@@ -1,0 +1,71 @@
+     1                                  ; printf2.asm  use "C" printf on char, string, int, double
+     2                                  ; 
+     3                                  ; Assemble:	nasm -f elf -l printf2.lst  printf2.asm
+     4                                  ; Link:		gcc -o printf2  printf2.o
+     5                                  ; Run:		printf2
+     6                                  ; Output:	
+     7                                  ;Hello world: a string of length 7 1234567 6789ABCD 5.327000e-30 -1.234568E+302
+     8                                  ; 
+     9                                  ; A similar "C" program
+    10                                  ; #include <stdio.h>
+    11                                  ; int main()
+    12                                  ; {
+    13                                  ;   char   char1='a';         /* sample character */
+    14                                  ;   char   str1[]="string";   /* sample string */
+    15                                  ;   int    int1=1234567;      /* sample integer */
+    16                                  ;   int    hex1=0x6789ABCD;   /* sample hexadecimal */
+    17                                  ;   float  flt1=5.327e-30;    /* sample float */
+    18                                  ;   double flt2=-123.4e300;   /* sample double */
+    19                                  ; 
+    20                                  ;   printf("Hello world: %c %s %d %X %e %E \n", /* format string for printf */
+    21                                  ;          char1, str1, int1, hex1, flt1, flt2);
+    22                                  ;   return 0;
+    23                                  ; }
+    24                                  
+    25                                  
+    26                                          extern printf                   ; the C function to be called
+    27                                  
+    28                                          SECTION .data                   ; Data section
+    29                                  
+    30 00000000 48656C6C6F20776F72-     msg:    db "Hello world: %c %s of length %d %d %X %e %E",10,0
+    31 00000009 6C643A202563202573-
+    32 00000012 206F66206C656E6774-
+    33 0000001B 682025642025642025-
+    34 00000024 582025652025450A00 
+    35                                  					; format string for printf
+    36 0000002D 61                      char1:	db	'a'			; a character 
+    37 0000002E 737472696E6700          str1:	db	"string",0	        ; a C string, "string" needs 0
+    38                                  len:	equ	$-str1			; len has value, not an address
+    39 00000035 87D61200                inta1:	dd	1234567		        ; integer 1234567
+    40 00000039 CDAB8967                hex1:	dd	0x6789ABCD	        ; hex constant 
+    41 0000003D BB16D80E                flt1:	dd	5.327e-30		; 32-bit floating point
+    42 00000041 6ED768D3250BA7FE        flt2:	dq	-123.456789e300	        ; 64-bit floating point
+    43                                  
+    44                                  	SECTION .bss
+    45                                  		
+    46 00000000 <res 00000008>          flttmp:	resq 1			        ; 64-bit temporary for printing flt1
+    47                                  	
+    48                                          SECTION .text                   ; Code section.
+    49                                  
+    50                                          global	main		        ; "C" main program 
+    51                                  main:				        ; label, start of main program
+    52                                  	 
+    53 00000000 D905[3D000000]          	fld	dword [flt1]	        ; need to convert 32-bit to 64-bit
+    54 00000006 DD1D[00000000]          	fstp	qword [flttmp]          ; floating load makes 80-bit,
+    55                                  	                                ; store as 64-bit
+    56                                  	                                ; push last argument first
+    57 0000000C FF35[45000000]          	push	dword [flt2+4]	        ; 64 bit floating point (bottom)
+    58 00000012 FF35[41000000]          	push	dword [flt2]	        ; 64 bit floating point (top)
+    59 00000018 FF35[04000000]          	push	dword [flttmp+4]        ; 64 bit floating point (bottom)
+    60 0000001E FF35[00000000]          	push	dword [flttmp]	        ; 64 bit floating point (top)
+    61 00000024 FF35[39000000]          	push	dword [hex1]	        ; hex constant
+    62 0000002A FF35[35000000]          	push	dword [inta1]	        ; integer data pass by value
+    63 00000030 6A07                    	push	dword len	        ; constant pass by value
+    64 00000032 68[2E000000]            	push	dword str1		; "string" pass by reference 
+    65 00000037 FF35[2D000000]                  push    dword [char1]		; 'a'
+    66 0000003D 68[00000000]                    push    dword msg		; address of format string
+    67 00000042 E8(00000000)                    call    printf			; Call C function
+    68 00000047 83C428                          add     esp, 40			; pop stack 10*4 bytes
+    69                                  
+    70 0000004A B800000000                      mov     eax, 0			; exit code, 0=normal
+    71 0000004F C3                              ret				; main returns to operating system
