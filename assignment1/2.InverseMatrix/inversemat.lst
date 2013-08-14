@@ -1,0 +1,491 @@
+     1                                  ; Computer System Design Lab, Assignment-1
+     2                                  ; Inverse of the Matrix
+     3                                  
+     4                                  ; Declaring externel Functions
+     5                                  extern printf
+     6                                  %macro printString 1
+     7                                  
+     8                                  	SECTION	.data
+     9                                  	.str:	db	%1,0		; %1 is macro call first actual parameter
+    10                                  	;strlen: equ $-str
+    11                                  	SECTION .bss
+    12                                  	
+    13                                  	SECTION .text
+    14                                  push eax
+    15                                  push ebx
+    16                                  push ecx
+    17                                  push edx
+    18                                  
+    19                                  	push	dword .str 	; users string
+    20                                      push    dword strfmt       ; address of format string
+    21                                      call    printf          ; Call C function
+    22                                      add     esp,8          ; pop stack 8*4 bytes
+    23                                  
+    24                                  pop edx
+    25                                  pop ecx
+    26                                  pop ebx
+    27                                  pop eax
+    28                                  %endmacro
+    29                                  
+    30                                  ; Macro for printing a number
+    31                                  
+    32                                  %macro printNumber 1
+    33                                  
+    34                                  	SECTION	.data
+    35                                  	;number:	db	%1,0		; %1 is macro call first actual parameter
+    36                                  	SECTION .bss
+    37                                  	
+    38                                  	SECTION .text
+    39                                  push ebx
+    40                                  push ecx
+    41                                  push edx
+    42                                   
+    43                                  	push	dword [globalNum] 	; users string
+    44                                      push    dword numfmt       ; address of format string
+    45                                      call    printf          ; Call C function
+    46                                      add     esp,8          ; pop stack 8*4 bytes
+    47                                  
+    48                                  pop edx
+    49                                  pop ecx
+    50                                  pop ebx
+    51                                  %endmacro
+    52                                  
+    53                                  printIntro:
+    54                                  	printString "Asssignment:1 Matrix Multiplication " 
+    55                              <1> 
+    56                              <1>  SECTION .data
+    57 00000000 4173737369676E6D65- <1>  .str: db %1,0
+    58 00000009 6E743A31204D617472- <1>
+    59 00000012 6978204D756C746970- <1>
+    60 0000001B 6C69636174696F6E20- <1>
+    61 00000024 00                  <1>
+    62                              <1> 
+    63                              <1>  SECTION .bss
+    64                              <1> 
+    65                              <1>  SECTION .text
+    66 00000000 50                  <1> push eax
+    67 00000001 53                  <1> push ebx
+    68 00000002 51                  <1> push ecx
+    69 00000003 52                  <1> push edx
+    70                              <1> 
+    71 00000004 68[00000000]        <1>  push dword .str
+    72 00000009 68[50000000]        <1>  push dword strfmt
+    73 0000000E E8(00000000)        <1>  call printf
+    74 00000013 83C408              <1>  add esp,8
+    75                              <1> 
+    76 00000016 5A                  <1> pop edx
+    77 00000017 59                  <1> pop ecx
+    78 00000018 5B                  <1> pop ebx
+    79 00000019 58                  <1> pop eax
+    80 0000001A C3                      ret
+    81                                  printRow:
+    82                                  	printString " Row number "
+    83                              <1> 
+    84                              <1>  SECTION .data
+    85 00000025 20526F77206E756D62- <1>  .str: db %1,0
+    86 0000002E 65722000            <1>
+    87                              <1> 
+    88                              <1>  SECTION .bss
+    89                              <1> 
+    90                              <1>  SECTION .text
+    91 0000001B 50                  <1> push eax
+    92 0000001C 53                  <1> push ebx
+    93 0000001D 51                  <1> push ecx
+    94 0000001E 52                  <1> push edx
+    95                              <1> 
+    96 0000001F 68[25000000]        <1>  push dword .str
+    97 00000024 68[50000000]        <1>  push dword strfmt
+    98 00000029 E8(00000000)        <1>  call printf
+    99 0000002E 83C408              <1>  add esp,8
+   100                              <1> 
+   101 00000031 5A                  <1> pop edx
+   102 00000032 59                  <1> pop ecx
+   103 00000033 5B                  <1> pop ebx
+   104 00000034 58                  <1> pop eax
+   105 00000035 C3                      ret
+   106                                  printCol:
+   107                                  	printString " Col number "
+   108                              <1> 
+   109                              <1>  SECTION .data
+   110 00000032 20436F6C206E756D62- <1>  .str: db %1,0
+   111 0000003B 65722000            <1>
+   112                              <1> 
+   113                              <1>  SECTION .bss
+   114                              <1> 
+   115                              <1>  SECTION .text
+   116 00000036 50                  <1> push eax
+   117 00000037 53                  <1> push ebx
+   118 00000038 51                  <1> push ecx
+   119 00000039 52                  <1> push edx
+   120                              <1> 
+   121 0000003A 68[32000000]        <1>  push dword .str
+   122 0000003F 68[50000000]        <1>  push dword strfmt
+   123 00000044 E8(00000000)        <1>  call printf
+   124 00000049 83C408              <1>  add esp,8
+   125                              <1> 
+   126 0000004C 5A                  <1> pop edx
+   127 0000004D 59                  <1> pop ecx
+   128 0000004E 5B                  <1> pop ebx
+   129 0000004F 58                  <1> pop eax
+   130 00000050 C3                      ret
+   131                                  printDeterminent:
+   132                                  	printString " Determinent is "
+   133                              <1> 
+   134                              <1>  SECTION .data
+   135 0000003F 2044657465726D696E- <1>  .str: db %1,0
+   136 00000048 656E742069732000    <1>
+   137                              <1> 
+   138                              <1>  SECTION .bss
+   139                              <1> 
+   140                              <1>  SECTION .text
+   141 00000051 50                  <1> push eax
+   142 00000052 53                  <1> push ebx
+   143 00000053 51                  <1> push ecx
+   144 00000054 52                  <1> push edx
+   145                              <1> 
+   146 00000055 68[3F000000]        <1>  push dword .str
+   147 0000005A 68[50000000]        <1>  push dword strfmt
+   148 0000005F E8(00000000)        <1>  call printf
+   149 00000064 83C408              <1>  add esp,8
+   150                              <1> 
+   151 00000067 5A                  <1> pop edx
+   152 00000068 59                  <1> pop ecx
+   153 00000069 5B                  <1> pop ebx
+   154 0000006A 58                  <1> pop eax
+   155 0000006B C3                      ret
+   156                                  
+   157                                  
+   158                                  rcToAddress:
+   159                                  		; get no of cols in ebx
+   160                                  	
+   161                                  		; if it is a first row then don't  care about of no of rows 
+   162                                  		; dec column and multiply with 4
+   163                                  		; if it is first row go to remRows
+   164                                  		; ecx contains row number
+   165                                  		; edx contains column number
+   166                                  		
+   167 0000006C 49                      		dec ecx
+   168 0000006D 4A                      		dec edx
+   169 0000006E 6BC904                  		imul ecx,4
+   170 00000071 0FAFCB                  		imul ecx,ebx
+   171 00000074 6BD204                  		imul edx,4
+   172 00000077 01D1                    		add ecx,edx
+   173 00000079 89C8                    		mov eax,ecx
+   174                                  	
+   175 0000007B C3                      ret
+   176                                  multiply:
+   177 0000007C 53                      	push ebx
+   178 0000007D 0FAFCA                  		imul ecx,edx
+   179 00000080 89C8                    		mov eax,ecx 
+   180 00000082 5B                      	pop ebx
+   181                                  	
+   182 00000083 C3                      ret	
+   183                                  Minor:
+   184                                  	; eax ebx
+   185                                  	; ecx edx
+   186 00000084 0FAFC2                  	imul eax,edx
+   187 00000087 0FAFD9                  	imul ebx,ecx
+   188 0000008A 29D8                    	sub eax,ebx
+   189                                  	
+   190 0000008C C3                      ret
+   191                                  Determinent:
+   192                                  	
+   193                                  	; minor 1
+   194 0000008D A1[7C000000]            	mov eax,[MatrixA+16]
+   195 00000092 8B1D[80000000]          	mov ebx,[MatrixA+20]
+   196 00000098 8B0D[88000000]          	mov ecx,[MatrixA+28]
+   197 0000009E 8B15[8C000000]          	mov edx,[MatrixA+32]
+   198 000000A4 E8DBFFFFFF              	call Minor
+   199 000000A9 A3[C0000000]            	mov [temp1],eax
+   200                                  		
+   201                                  ;	mov [globalNum],eax
+   202                                  ;	printNumber eax
+   203                                  	
+   204                                  	; minor 2
+   205 000000AE A1[78000000]            	mov eax,[MatrixA+12]
+   206 000000B3 8B1D[80000000]          	mov ebx,[MatrixA+20]
+   207 000000B9 8B0D[84000000]          	mov ecx,[MatrixA+24]
+   208 000000BF 8B15[8C000000]          	mov edx,[MatrixA+32]	
+   209 000000C5 E8BAFFFFFF              	call Minor
+   210 000000CA A3[C4000000]            	mov [temp2],eax
+   211                                  	
+   212                                  	;mov [globalNum],eax
+   213                                  	;printNumber eax
+   214                                  	
+   215                                  	
+   216                                  	; minor 3
+   217 000000CF A1[78000000]            	mov eax,[MatrixA+12]
+   218 000000D4 8B1D[7C000000]          	mov ebx,[MatrixA+16]
+   219 000000DA 8B0D[84000000]          	mov ecx,[MatrixA+24]
+   220 000000E0 8B15[88000000]          	mov edx,[MatrixA+28]	
+   221 000000E6 E899FFFFFF              	call Minor
+   222 000000EB A3[C8000000]            	mov [temp3],eax
+   223                                  
+   224                                  	;mov [globalNum],eax
+   225                                  	;printNumber eax
+   226                                  	
+   227                                  	
+   228 000000F0 A1[6C000000]            	mov eax,[MatrixA]
+   229 000000F5 8B1D[C0000000]          	mov ebx,[temp1]	
+   230 000000FB 0FAFC3                  	imul eax,ebx
+   231 000000FE A3[C0000000]            	mov [temp1],eax
+   232                                  	
+   233                                  	;	mov [globalNum],eax
+   234                                  	;printNumber eax
+   235                                  
+   236                                  	
+   237 00000103 A1[70000000]            	mov eax,[MatrixA+4]
+   238 00000108 8B1D[C4000000]          	mov ebx,[temp2]
+   239 0000010E 0FAFC3                  	imul eax,ebx
+   240 00000111 A3[C4000000]            	mov [temp2],eax
+   241                                  	;		mov [globalNum],eax
+   242                                  	;printNumber eax
+   243                                  
+   244 00000116 A1[74000000]            	mov eax,[MatrixA+8]
+   245 0000011B 8B1D[C8000000]          	mov ebx,[temp3]
+   246 00000121 0FAFC3                  	imul eax,ebx
+   247 00000124 A3[C8000000]            	mov [temp3],eax
+   248                                  ;			mov [globalNum],eax
+   249                                  ;	printNumber eax
+   250                                  
+   251                                  	
+   252 00000129 A1[C0000000]            	mov eax,[temp1]
+   253 0000012E 8B1D[C4000000]          	mov ebx,[temp2]
+   254 00000134 29D8                    	sub eax,ebx
+   255 00000136 8B0D[C8000000]          	mov ecx,[temp3]
+   256 0000013C 01C8                    	add eax,ecx
+   257                                  	
+   258 0000013E A3[BC000000]            	mov [Det],eax
+   259                                  	
+   260                                  	; Determinent value is stored in eax value
+   261 00000143 C3                      ret
+   262                                  
+   263                                  transposeMatrix:
+   264 00000144 A1[6C000000]            	mov eax, [MatrixA]
+   265 00000149 A3[90000000]            	mov [InvMatrixA],eax
+   266 0000014E A1[7C000000]            	mov eax,[MatrixA+16]
+   267 00000153 A3[A0000000]            	mov [InvMatrixA+16],eax
+   268 00000158 A1[8C000000]            	mov eax,[MatrixA+32]
+   269 0000015D A3[B0000000]            	mov [InvMatrixA+32],eax
+   270                                  	
+   271 00000162 A1[78000000]            	mov eax,[MatrixA+12]
+   272 00000167 A3[94000000]            	mov [InvMatrixA+4],eax	
+   273                                  
+   274 0000016C A1[84000000]            	mov eax,[MatrixA+24]
+   275 00000171 A3[98000000]            	mov [InvMatrixA+8],eax
+   276                                  
+   277 00000176 A1[70000000]            	mov eax,[MatrixA+4]
+   278 0000017B A3[9C000000]            	mov [InvMatrixA+12],eax
+   279                                  
+   280 00000180 A1[88000000]            	mov eax,[MatrixA+28]
+   281 00000185 A3[A4000000]            	mov [InvMatrixA+20],eax	
+   282                                  
+   283 0000018A A1[74000000]            	mov eax,[MatrixA+8]
+   284 0000018F A3[A8000000]            	mov [InvMatrixA+24],eax
+   285                                  	
+   286 00000194 A1[80000000]            	mov eax,[MatrixA+20]
+   287 00000199 A3[AC000000]            	mov [InvMatrixA+28],eax
+   288 0000019E C3                      ret
+   289                                  printInverseMatrix:
+   290                                  	firstLoop:
+   291                                  		; compare the i value if i value equals to no of rows then go and exit
+   292                                  		; otherwise goto second loop
+   293                                  		;call printIntro
+   294 0000019F A1[60000000]            		mov eax,[i]
+   295 000001A4 BB09000000              		mov ebx,9
+   296 000001A9 83C301                  		add ebx,1
+   297 000001AC 39D8                    		cmp eax,ebx
+   298 000001AE 7436                    		je ssi
+   299                                  		
+   300 000001B0 48                      		dec eax
+   301 000001B1 6BC004                  		imul eax,4
+   302 000001B4 8B98[90000000]          		mov ebx,[InvMatrixA+eax]
+   303 000001BA 891D[5C000000]          		mov [globalNum],ebx
+   304                                  		printNumber ebx
+   305                              <1> 
+   306                              <1>  SECTION .data
+   307                              <1> 
+   308                              <1>  SECTION .bss
+   309                              <1> 
+   310                              <1>  SECTION .text
+   311 000001C0 53                  <1> push ebx
+   312 000001C1 51                  <1> push ecx
+   313 000001C2 52                  <1> push edx
+   314                              <1> 
+   315 000001C3 FF35[5C000000]      <1>  push dword [globalNum]
+   316 000001C9 68[56000000]        <1>  push dword numfmt
+   317 000001CE E8(00000000)        <1>  call printf
+   318 000001D3 83C408              <1>  add esp,8
+   319                              <1> 
+   320 000001D6 5A                  <1> pop edx
+   321 000001D7 59                  <1> pop ecx
+   322 000001D8 5B                  <1> pop ebx
+   323                                  		incIVal:	
+   324                                  			; incrementing i value	
+   325 000001D9 A1[60000000]            			mov eax,[i]
+   326 000001DE 40                      			inc eax
+   327 000001DF A3[60000000]            			mov [i],eax
+   328 000001E4 EBB9                    			jmp firstLoop
+   329                                  	ssi:
+   330 000001E6 C3                      ret			
+   331                                  calculate:
+   332                                  	
+   333                                  	; Minor m11
+   334 000001E7 A1[A0000000]            	mov eax,[InvMatrixA+16]
+   335 000001EC 8B1D[A4000000]          	mov ebx,[InvMatrixA+20]
+   336 000001F2 8B0D[AC000000]          	mov ecx,[InvMatrixA+28]
+   337 000001F8 8B15[B0000000]          	mov edx,[InvMatrixA+32]
+   338 000001FE E881FEFFFF              	call Minor
+   339 00000203 A3[CC000000]            	mov [m11],eax
+   340                                  	
+   341                                  	; Minor m12
+   342 00000208 A1[9C000000]            	mov eax,[InvMatrixA+12]
+   343 0000020D 8B1D[A4000000]          	mov ebx,[InvMatrixA+20]
+   344 00000213 8B0D[A8000000]          	mov ecx,[InvMatrixA+24]
+   345 00000219 8B15[B0000000]          	mov edx,[InvMatrixA+32]
+   346 0000021F E860FEFFFF              	call Minor
+   347 00000224 A3[D0000000]            	mov [m12],eax
+   348                                  	; Minor m13
+   349 00000229 A1[9C000000]            	mov eax,[InvMatrixA+12]
+   350 0000022E 8B1D[A0000000]          	mov ebx,[InvMatrixA+16]
+   351 00000234 8B0D[A8000000]          	mov ecx,[InvMatrixA+24]
+   352 0000023A 8B15[AC000000]          	mov edx,[InvMatrixA+28]
+   353 00000240 E83FFEFFFF              	call Minor
+   354 00000245 A3[D4000000]            	mov [m13],eax
+   355                                  	; Minor m21
+   356 0000024A A1[94000000]            	mov eax,[InvMatrixA+4]
+   357 0000024F 8B1D[98000000]          	mov ebx,[InvMatrixA+8]
+   358 00000255 8B0D[AC000000]          	mov ecx,[InvMatrixA+28]
+   359 0000025B 8B15[B0000000]          	mov edx,[InvMatrixA+32]
+   360 00000261 E81EFEFFFF              	call Minor
+   361 00000266 A3[D8000000]            	mov [m21],eax
+   362                                  	; Minor m22
+   363 0000026B A1[90000000]            	mov eax,[InvMatrixA+0]
+   364 00000270 8B1D[98000000]          	mov ebx,[InvMatrixA+8]
+   365 00000276 8B0D[A8000000]          	mov ecx,[InvMatrixA+24]
+   366 0000027C 8B15[B0000000]          	mov edx,[InvMatrixA+32]
+   367 00000282 E8FDFDFFFF              	call Minor
+   368 00000287 A3[DC000000]            	mov [m22],eax
+   369                                  	; Minor m23
+   370 0000028C A1[90000000]            	mov eax,[InvMatrixA+0]
+   371 00000291 8B1D[94000000]          	mov ebx,[InvMatrixA+4]
+   372 00000297 8B0D[A8000000]          	mov ecx,[InvMatrixA+24]
+   373 0000029D 8B15[AC000000]          	mov edx,[InvMatrixA+28]
+   374 000002A3 E8DCFDFFFF              	call Minor
+   375 000002A8 A3[E0000000]            	mov [m23],eax
+   376                                  	; Minor m31
+   377 000002AD A1[94000000]            	mov eax,[InvMatrixA+4]
+   378 000002B2 8B1D[98000000]          	mov ebx,[InvMatrixA+8]
+   379 000002B8 8B0D[A0000000]          	mov ecx,[InvMatrixA+16]
+   380 000002BE 8B15[A4000000]          	mov edx,[InvMatrixA+20]
+   381 000002C4 E8BBFDFFFF              	call Minor
+   382 000002C9 A3[E4000000]            	mov [m31],eax
+   383                                  	; Minor m32
+   384 000002CE A1[90000000]            	mov eax,[InvMatrixA+0]
+   385 000002D3 8B1D[98000000]          	mov ebx,[InvMatrixA+8]
+   386 000002D9 8B0D[9C000000]          	mov ecx,[InvMatrixA+12]
+   387 000002DF 8B15[A4000000]          	mov edx,[InvMatrixA+20]
+   388 000002E5 E89AFDFFFF              	call Minor
+   389 000002EA A3[E8000000]            	mov [m32],eax
+   390                                  	; Minor m33
+   391 000002EF A1[90000000]            	mov eax,[InvMatrixA+0]
+   392 000002F4 8B1D[94000000]          	mov ebx,[InvMatrixA+4]
+   393 000002FA 8B0D[9C000000]          	mov ecx,[InvMatrixA+12]
+   394 00000300 8B15[A0000000]          	mov edx,[InvMatrixA+16]
+   395 00000306 E879FDFFFF              	call Minor
+   396 0000030B A3[EC000000]            	mov [m33],eax
+   397                                  	
+   398 00000310 A1[CC000000]            	mov eax,[m11]
+   399 00000315 A3[90000000]            	mov [InvMatrixA],eax
+   400 0000031A A1[D0000000]            	mov eax,[m12]
+   401 0000031F 6BC0FF                  	imul eax,-1
+   402 00000322 A3[94000000]            	mov [InvMatrixA+4],eax
+   403 00000327 A1[D4000000]            	mov eax,[m13]
+   404 0000032C A3[98000000]            	mov [InvMatrixA+8],eax
+   405                                  	
+   406 00000331 A1[D8000000]            	mov eax,[m21]
+   407 00000336 6BC0FF                  	imul eax,-1
+   408 00000339 A3[9C000000]            	mov [InvMatrixA+12],eax
+   409 0000033E A1[DC000000]            	mov eax,[m22]
+   410 00000343 A3[A0000000]            	mov [InvMatrixA+16],eax	
+   411 00000348 A1[E0000000]            	mov eax,[m23]
+   412 0000034D 6BC0FF                  	imul eax,-1
+   413 00000350 A3[A4000000]            	mov [InvMatrixA+20],eax
+   414                                  	
+   415 00000355 A1[E4000000]            	mov eax,[m31]
+   416 0000035A A3[A8000000]            	mov [InvMatrixA+24],eax
+   417 0000035F A1[E8000000]            	mov eax,[m32]
+   418 00000364 6BC0FF                  	imul eax,-1
+   419 00000367 A3[AC000000]            	mov [InvMatrixA+28],eax
+   420 0000036C A1[EC000000]            	mov eax,[m33]
+   421 00000371 A3[B0000000]            	mov [InvMatrixA+32],eax
+   422                                  
+   423 00000376 C3                      ret
+   424                                  SECTION .data
+   425 00000050 202573200A00            	strfmt: db " %s ",10,0	; format string for printf
+   426 00000056 202564200A00            	numfmt: db " %d ",10,0
+   427 0000005C 00000000                	globalNum: dd 0
+   428 00000060 01000000                	i: dd 1
+   429 00000064 01000000                	j: dd 1
+   430 00000068 01000000                	k: dd 1
+   431                                  	;MatrixA: db 1,2,3,4,5,6,7,8,9
+   432 0000006C 010000000200000003-     	MatrixA: dd 1,2,3,0,1,4,5,6,0
+   433 00000075 000000000000000100-
+   434 0000007E 000004000000050000-
+   435 00000087 000600000000000000 
+   436 00000090 000000000000000000-     	InvMatrixA: dd 0,0,0,0,0,0,0,0,0
+   437 00000099 000000000000000000-
+   438 000000A2 000000000000000000-
+   439 000000AB 000000000000000000 
+   440 000000B4 03000000                	ARows: dd 3
+   441 000000B8 03000000                	ACols: dd 3
+   442 000000BC 00000000                	Det: dd 0
+   443 000000C0 00000000                	temp1: dd 0
+   444 000000C4 00000000                	temp2: dd 0
+   445 000000C8 00000000                	temp3: dd 0
+   446 000000CC 00000000                	m11: dd 0
+   447 000000D0 00000000                	m12: dd 0
+   448 000000D4 00000000                	m13: dd 0
+   449 000000D8 00000000                	m21: dd 0
+   450 000000DC 00000000                	m22: dd 0
+   451 000000E0 00000000                	m23: dd 0
+   452 000000E4 00000000                	m31: dd 0
+   453 000000E8 00000000                	m32: dd 0
+   454 000000EC 00000000                	m33: dd 0
+   455                                  
+   456                                  SECTION .text
+   457                                  
+   458                                  global main
+   459                                  
+   460                                  main:
+   461 00000377 E8D5FCFFFF              	call printDeterminent
+   462 0000037C E80CFDFFFF              	call Determinent
+   463 00000381 A3[5C000000]            	mov [globalNum],eax
+   464                                  	printNumber eax
+   465                              <1> 
+   466                              <1>  SECTION .data
+   467                              <1> 
+   468                              <1>  SECTION .bss
+   469                              <1> 
+   470                              <1>  SECTION .text
+   471 00000386 53                  <1> push ebx
+   472 00000387 51                  <1> push ecx
+   473 00000388 52                  <1> push edx
+   474                              <1> 
+   475 00000389 FF35[5C000000]      <1>  push dword [globalNum]
+   476 0000038F 68[56000000]        <1>  push dword numfmt
+   477 00000394 E8(00000000)        <1>  call printf
+   478 00000399 83C408              <1>  add esp,8
+   479                              <1> 
+   480 0000039C 5A                  <1> pop edx
+   481 0000039D 59                  <1> pop ecx
+   482 0000039E 5B                  <1> pop ebx
+   483 0000039F E8A0FDFFFF              	call transposeMatrix	
+   484 000003A4 E83EFEFFFF              	call calculate
+   485 000003A9 E8F1FDFFFF              	call printInverseMatrix
+   486                                  
+   487                                  	
+   488                                  ; exit(0)
+   489                                  ssexit:
+   490 000003AE B800000000              mov eax,0
+   491 000003B3 C3                      ret
